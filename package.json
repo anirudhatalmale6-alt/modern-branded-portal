@@ -1,0 +1,26 @@
+{
+  "name": "modern-branded-portal",
+  "version": "1.0.0",
+  "description": "Modern branded member portal with 2FA, dashboard and admin invoice management",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.1",
+    "connect-sqlite3": "^0.9.17",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "multer": "^2.2.0",
+    "qrcode": "^1.5.4",
+    "session-file-store": "^1.5.0",
+    "speakeasy": "^2.0.0"
+  }
+}

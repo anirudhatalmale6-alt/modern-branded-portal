@@ -1,0 +1,91 @@
+<!doctype html><html lang="en"><head><%- include('partials/head', { title: 'Dashboard' }) %></head>
+<body>
+<%- include('partials/nav') %>
+<%
+  function statusBadge(s){
+    if(s==='Active') return '<span class="badge good">● Active</span>';
+    if(s==='Past due') return '<span class="badge warn">● Past due</span>';
+    if(s==='Cancelled') return '<span class="badge bad">● Cancelled</span>';
+    return '<span class="badge info">● '+s+'</span>';
+  }
+  const icons={login:'🔑',logout:'🚪',account_created:'✨',invoice_download:'⬇️',invoice_added:'📄',security:'🔐',subscription:'💳'};
+%>
+<div class="container" style="padding-bottom:50px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin:10px 0 22px">
+    <div>
+      <h1 style="margin:0;font-size:26px">Hi, <%= user.name.split(' ')[0] %> 👋</h1>
+      <p class="muted" style="margin:4px 0 0">Here's what's happening with your account.</p>
+    </div>
+    <% if (!user.twofa_enabled) { %>
+      <a class="btn btn-ghost btn-sm" href="/account">🔐 Enable 2FA</a>
+    <% } %>
+  </div>
+
+  <div class="tiles">
+    <div class="card tile">
+      <div class="k">Membership</div>
+      <div class="v"><%= user.plan %></div>
+      <div style="margin-top:8px"><%- statusBadge(user.plan_status) %></div>
+    </div>
+    <div class="card tile">
+      <div class="k">Renews / next bill</div>
+      <div class="v"><%= user.plan_renews || '—' %></div>
+      <div class="muted" style="font-size:13px;margin-top:8px">Auto-managed from admin</div>
+    </div>
+    <div class="card tile">
+      <div class="k">Invoices available</div>
+      <div class="v"><%= invoices.length %></div>
+      <div class="muted" style="font-size:13px;margin-top:8px">Download any time below</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <!-- Activity -->
+    <div class="card card-pad">
+      <div class="sec-head"><h2>Account activity</h2><span class="badge info"><%= activity.length %> events</span></div>
+      <% if (!activity.length) { %>
+        <p class="muted">No activity yet.</p>
+      <% } else { %>
+        <div class="timeline">
+          <% activity.forEach(function(a){ %>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="t"><%= icons[a.type] || '•' %> <%= a.detail || a.type %></div>
+              <div class="m"><%= a.created_at %> UTC<%= a.ip ? ' · ' + a.ip : '' %></div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Invoices + subscription -->
+    <div class="grid">
+      <div class="card card-pad">
+        <div class="sec-head"><h2>Subscription</h2></div>
+        <table>
+          <tr><td class="muted">Plan</td><td style="text-align:right"><strong><%= user.plan %></strong></td></tr>
+          <tr><td class="muted">Status</td><td style="text-align:right"><%- statusBadge(user.plan_status) %></td></tr>
+          <tr><td class="muted">Renews on</td><td style="text-align:right"><%= user.plan_renews || '—' %></td></tr>
+          <tr><td class="muted">Member since</td><td style="text-align:right"><%= user.created_at.slice(0,10) %></td></tr>
+        </table>
+      </div>
+      <div class="card card-pad">
+        <div class="sec-head"><h2>Invoices</h2></div>
+        <% if (!invoices.length) { %>
+          <p class="muted">No invoices yet. They'll appear here when uploaded.</p>
+        <% } else { %>
+          <% invoices.forEach(function(inv){ %>
+            <div class="inv">
+              <div>
+                <div style="font-weight:600">📄 <%= inv.label %><%= inv.amount ? ' · ' + inv.amount : '' %></div>
+                <div class="meta"><%= inv.uploaded_at.slice(0,10) %> · <%= inv.original %></div>
+              </div>
+              <a class="btn btn-ghost btn-sm" href="/invoice/<%= inv.id %>">Download</a>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

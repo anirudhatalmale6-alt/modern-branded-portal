@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><%- include('partials/head', { title: 'Two-factor' }) %></head>
+<body>
+<%- include('partials/nav') %>
+<div class="container narrow auth-wrap">
+  <div class="card card-pad" style="width:100%">
+    <div class="ic" style="width:48px;height:48px;border-radius:12px;background:rgba(109,124,255,.12);display:grid;place-items:center;font-size:24px;margin-bottom:12px">🔐</div>
+    <h1 style="font-size:23px;margin:0 0 6px">Two-factor verification</h1>
+    <p class="muted" style="margin:0 0 8px;font-size:14px">Enter the 6-digit code from your authenticator app.</p>
+    <% if (error) { %><div class="alert err"><%= error %></div><% } %>
+    <form action="/2fa" method="post">
+      <label class="f">Authentication code</label>
+      <input type="text" name="token" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]*"
+             placeholder="123 456" style="font-size:22px;letter-spacing:4px;text-align:center" required autofocus>
+      <button class="btn btn-primary btn-block mt">Verify & continue</button>
+    </form>
+    <div class="divider"></div>
+    <form action="/logout" method="post" class="center"><button class="btn btn-ghost btn-sm">Cancel</button></form>
+  </div>
+</div>
+</body></html>

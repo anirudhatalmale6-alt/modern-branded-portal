@@ -1,0 +1,114 @@
+<!doctype html><html lang="en"><head><%- include('partials/head', { title: 'Admin' }) %></head>
+<body>
+<%- include('partials/nav') %>
+<div class="container" style="padding-bottom:50px">
+  <h1 style="font-size:26px;margin:10px 0 4px">Admin panel</h1>
+  <p class="muted" style="margin:0 0 22px">Upload invoices, assign them to users, and manage subscriptions.</p>
+  <% if (msg) { %><div class="alert ok"><%= msg %></div><% } %>
+  <% if (error) { %><div class="alert err"><%= error %></div><% } %>
+
+  <div class="grid grid-2">
+    <!-- Upload invoice -->
+    <div class="card card-pad">
+      <div class="sec-head"><h2>Upload invoice</h2></div>
+      <form action="/admin/invoice" method="post" enctype="multipart/form-data" id="upForm">
+        <label class="f">Assign to user</label>
+        <select name="user_id" required>
+          <option value="">Select a user…</option>
+          <% users.forEach(function(u){ %>
+            <option value="<%= u.id %>"><%= u.name %> — <%= u.email %></option>
+          <% }) %>
+        </select>
+        <div class="grid grid-2" style="gap:12px">
+          <div><label class="f">Label</label><input type="text" name="label" placeholder="Invoice — Jan 2026"></div>
+          <div><label class="f">Amount (optional)</label><input type="text" name="amount" placeholder="$49.00"></div>
+        </div>
+        <label class="f">PDF file</label>
+        <div class="drop" id="drop">
+          <div id="dropText"><strong>Drag & drop</strong> a PDF here, or click to select</div>
+          <input type="file" name="pdf" id="pdf" accept="application/pdf" required style="display:none">
+        </div>
+        <button class="btn btn-primary btn-block mt">Upload & assign</button>
+      </form>
+    </div>
+
+    <!-- Manage subscription -->
+    <div class="card card-pad">
+      <div class="sec-head"><h2>Update subscription</h2></div>
+      <form action="/admin/plan" method="post">
+        <label class="f">User</label>
+        <select name="user_id" required>
+          <% users.forEach(function(u){ %>
+            <option value="<%= u.id %>"><%= u.name %> — <%= u.plan %> (<%= u.plan_status %>)</option>
+          <% }) %>
+        </select>
+        <div class="grid grid-2" style="gap:12px">
+          <div><label class="f">Plan</label>
+            <select name="plan"><option>Free</option><option selected>Starter</option><option>Pro</option><option>Enterprise</option></select>
+          </div>
+          <div><label class="f">Status</label>
+            <select name="plan_status"><option selected>Active</option><option>Past due</option><option>Cancelled</option></select>
+          </div>
+        </div>
+        <label class="f">Renews on</label>
+        <input type="date" name="plan_renews">
+        <button class="btn btn-primary btn-block mt">Save subscription</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- All invoices -->
+  <div class="card card-pad" style="margin-top:20px">
+    <div class="sec-head"><h2>All invoices</h2><span class="badge info"><%= invoices.length %> total</span></div>
+    <% if (!invoices.length) { %>
+      <p class="muted">No invoices uploaded yet.</p>
+    <% } else { %>
+      <div style="overflow-x:auto"><table>
+        <tr><th>Label</th><th>Assigned to</th><th>Amount</th><th>Uploaded</th><th></th></tr>
+        <% invoices.forEach(function(inv){ %>
+          <tr>
+            <td>📄 <%= inv.label %></td>
+            <td><%= inv.user_name %><div class="muted" style="font-size:12px"><%= inv.user_email %></div></td>
+            <td><%= inv.amount || '—' %></td>
+            <td class="muted"><%= inv.uploaded_at.slice(0,16) %></td>
+            <td style="text-align:right;white-space:nowrap">
+              <a class="btn btn-ghost btn-sm" href="/invoice/<%= inv.id %>">View</a>
+              <form action="/admin/invoice/<%= inv.id %>/delete" method="post" style="display:inline" onsubmit="return confirm('Delete this invoice?')">
+                <button class="btn btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </table></div>
+    <% } %>
+  </div>
+
+  <!-- Users -->
+  <div class="card card-pad" style="margin-top:20px">
+    <div class="sec-head"><h2>Users</h2><span class="badge info"><%= users.length %> total</span></div>
+    <div style="overflow-x:auto"><table>
+      <tr><th>Name</th><th>Email</th><th>Plan</th><th>Status</th><th>2FA</th><th>Role</th></tr>
+      <% users.forEach(function(u){ %>
+        <tr>
+          <td><%= u.name %></td>
+          <td class="muted"><%= u.email %></td>
+          <td><%= u.plan %></td>
+          <td><%= u.plan_status %></td>
+          <td><%= u.twofa_enabled ? '✅' : '—' %></td>
+          <td><%= u.is_admin ? 'Admin' : 'Member' %></td>
+        </tr>
+      <% }) %>
+    </table></div>
+  </div>
+</div>
+
+<script>
+  const drop=document.getElementById('drop'),pdf=document.getElementById('pdf'),dt=document.getElementById('dropText');
+  drop.addEventListener('click',()=>pdf.click());
+  ['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('drag')}));
+  ['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('drag')}));
+  drop.addEventListener('drop',ev=>{if(ev.dataTransfer.files.length){pdf.files=ev.dataTransfer.files;show()}});
+  pdf.addEventListener('change',show);
+  function show(){if(pdf.files.length)dt.innerHTML='📄 <strong>'+pdf.files[0].name+'</strong> selected';}
+</script>
+</body></html>

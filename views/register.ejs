@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><%- include('partials/head', { title: 'Create account' }) %></head>
+<body>
+<%- include('partials/nav') %>
+<div class="container narrow auth-wrap">
+  <div class="card card-pad" style="width:100%">
+    <h1 style="font-size:24px;margin:0 0 6px">Create your account</h1>
+    <p class="muted" style="margin:0 0 8px;font-size:14px">It takes less than a minute.</p>
+    <% if (error) { %><div class="alert err"><%= error %></div><% } %>
+    <form action="/register" method="post">
+      <label class="f">Full name</label>
+      <input type="text" name="name" value="<%= form.name || '' %>" required autofocus>
+      <label class="f">Email address</label>
+      <input type="email" name="email" value="<%= form.email || '' %>" required>
+      <label class="f">Password</label>
+      <input type="password" name="password" minlength="6" required>
+      <div class="hint">Minimum 6 characters. You can turn on 2FA right after signing in.</div>
+      <button class="btn btn-primary btn-block mt">Create account</button>
+    </form>
+    <div class="divider"></div>
+    <p class="center muted" style="font-size:14px;margin:0">Already registered? <a href="/login">Log in</a></p>
+  </div>
+</div>
+</body></html>

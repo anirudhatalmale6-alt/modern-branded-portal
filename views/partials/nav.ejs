@@ -1,0 +1,16 @@
+<div class="container">
+  <nav class="nav">
+    <a class="brand" href="/"><span class="logo"><%= brand.charAt(0) %></span><%= brand %></a>
+    <div class="nav-links">
+      <% if (user) { %>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/account">Account</a>
+        <% if (user.is_admin) { %><a href="/admin">Admin</a><% } %>
+        <form action="/logout" method="post" style="margin:0"><button class="btn btn-ghost btn-sm">Sign out</button></form>
+      <% } else { %>
+        <a href="/login">Log in</a>
+        <a class="btn btn-primary btn-sm" href="/register">Get started</a>
+      <% } %>
+    </div>
+  </nav>
+</div>

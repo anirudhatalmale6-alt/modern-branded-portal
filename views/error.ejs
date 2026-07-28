@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><%- include('partials/head', { title: 'Error ' + code }) %></head>
+<body>
+<%- include('partials/nav') %>
+<div class="container narrow auth-wrap">
+  <div class="card card-pad center" style="width:100%">
+    <div style="font-size:52px;font-weight:800;background:linear-gradient(120deg,var(--brand-2),var(--brand));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent"><%= code %></div>
+    <p class="muted" style="margin:8px 0 18px"><%= msg %></p>
+    <a class="btn btn-primary" href="/">Back home</a>
+  </div>
+</div>
+</body></html>

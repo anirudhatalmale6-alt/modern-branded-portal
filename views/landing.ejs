@@ -1,0 +1,34 @@
+<!doctype html><html lang="en"><head><%- include('partials/head', { title: 'Secure member portal' }) %></head>
+<body>
+<%- include('partials/nav') %>
+<div class="container">
+  <section class="hero">
+    <span class="pill">● Secure member portal</span>
+    <h1>One clean home for your<br><span>account, plan & invoices</span></h1>
+    <p>Create an account, sign in with two-factor security, and track your activity, subscription and downloadable invoices — all from one modern dashboard.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="/register">Create your account →</a>
+      <a class="btn btn-ghost" href="/login">I already have one</a>
+    </div>
+  </section>
+
+  <section class="features grid grid-3">
+    <div class="card feature">
+      <div class="ic">🔐</div>
+      <h3>2FA-protected sign-in</h3>
+      <p>Email & password plus an authenticator code (TOTP) before anyone reaches your private area.</p>
+    </div>
+    <div class="card feature">
+      <div class="ic">📊</div>
+      <h3>Activity & subscription</h3>
+      <p>A live timeline of every sign-in and action, with your current membership status always in view.</p>
+    </div>
+    <div class="card feature">
+      <div class="ic">📄</div>
+      <h3>Downloadable invoices</h3>
+      <p>Your PDF invoices, uploaded from the back-end and available to download any time — securely.</p>
+    </div>
+  </section>
+</div>
+<div class="footer">© <%= brand %> — modern branded member portal</div>
+</body></html>

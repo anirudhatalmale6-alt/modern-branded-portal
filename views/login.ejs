@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><%- include('partials/head', { title: 'Log in' }) %></head>
+<body>
+<%- include('partials/nav') %>
+<div class="container narrow auth-wrap">
+  <div class="card card-pad" style="width:100%">
+    <h1 style="font-size:24px;margin:0 0 6px">Welcome back</h1>
+    <p class="muted" style="margin:0 0 8px;font-size:14px">Sign in to your <%= brand %> account.</p>
+    <% if (error) { %><div class="alert err"><%= error %></div><% } %>
+    <form action="/login" method="post">
+      <label class="f">Email address</label>
+      <input type="email" name="email" value="<%= form.email || '' %>" required autofocus>
+      <label class="f">Password</label>
+      <input type="password" name="password" required>
+      <button class="btn btn-primary btn-block mt">Continue</button>
+    </form>
+    <div class="divider"></div>
+    <p class="center muted" style="font-size:14px;margin:0">No account? <a href="/register">Create one</a></p>
+  </div>
+</div>
+</body></html>

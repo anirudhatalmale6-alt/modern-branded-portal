@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><%- include('partials/head', { title: 'Account & security' }) %></head>
+<body>
+<%- include('partials/nav') %>
+<div class="container narrow" style="padding:20px 0 50px">
+  <h1 style="font-size:24px;margin:6px 0 18px">Account & security</h1>
+
+  <div class="card card-pad" style="margin-bottom:20px">
+    <div class="sec-head"><h2>Profile</h2></div>
+    <table>
+      <tr><td class="muted">Name</td><td style="text-align:right"><%= user.name %></td></tr>
+      <tr><td class="muted">Email</td><td style="text-align:right"><%= user.email %></td></tr>
+      <tr><td class="muted">Role</td><td style="text-align:right"><%= user.is_admin ? 'Administrator' : 'Member' %></td></tr>
+    </table>
+  </div>
+
+  <div class="card card-pad">
+    <div class="sec-head">
+      <h2>Two-factor authentication</h2>
+      <% if (user.twofa_enabled) { %><span class="badge good">● Enabled</span><% } else { %><span class="badge warn">● Off</span><% } %>
+    </div>
+    <% if (typeof msg !== 'undefined' && msg) { %><div class="alert ok"><%= msg %></div><% } %>
+    <% if (typeof error !== 'undefined' && error) { %><div class="alert err"><%= error %></div><% } %>
+
+    <% if (typeof qr !== 'undefined' && qr) { %>
+      <p class="muted" style="font-size:14px">1. Scan this with Google Authenticator, Authy or 1Password. 2. Enter the 6-digit code to confirm.</p>
+      <div class="center"><div class="qr"><img src="<%= qr %>" alt="2FA QR"></div></div>
+      <p class="muted center" style="font-size:12.5px;margin:12px 0 6px">Can't scan? Enter this key manually:</p>
+      <div class="center"><span class="code"><%= secret %></span></div>
+      <form action="/account/2fa/enable" method="post">
+        <label class="f">Verification code</label>
+        <input type="text" name="token" inputmode="numeric" placeholder="123 456" style="text-align:center;letter-spacing:3px" required>
+        <button class="btn btn-primary btn-block mt">Confirm & enable</button>
+      </form>
+    <% } else if (user.twofa_enabled) { %>
+      <p class="muted" style="font-size:14px">Your account is protected with an authenticator app. You'll be asked for a code each time you sign in.</p>
+      <form action="/account/2fa/disable" method="post"><button class="btn btn-danger">Disable 2FA</button></form>
+    <% } else { %>
+      <p class="muted" style="font-size:14px">Add an extra layer of security. You'll enter a one-time code from your phone when signing in.</p>
+      <form action="/account/2fa/setup" method="post"><button class="btn btn-primary">Set up 2FA</button></form>
+    <% } %>
+  </div>
+</div>
+</body></html>
